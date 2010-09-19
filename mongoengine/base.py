@@ -252,7 +252,10 @@ class TopLevelDocumentMetaclass(DocumentMetaclass):
         # Set up collection manager, needs the class to have fields so use
         # DocumentMetaclass before instantiating CollectionManager object
         new_class = super_new(cls, name, bases, attrs)
-        new_class.objects = QuerySetManager()
+        queryset_manager_class = attrs.get('queryset_manager_class', 
+                                           QuerySetManager)
+
+        new_class.objects = queryset_manager_class()
 
         user_indexes = [QuerySet._build_index_spec(new_class, spec)
                         for spec in meta['indexes']] + base_indexes
